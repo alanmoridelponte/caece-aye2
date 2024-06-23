@@ -40,5 +40,16 @@ class AccountService:
         else:
             print(f"Account {account.id} cannot follow account {follower.id} due to type restrictions.")
 
+    def unfollow(self, account: Account, follower: Account):
+        if account.state == Account.STATE_SUSPENDED:
+            print(f"Account {account.id} is suspended and cannot follow other accounts.")
+            return
+
+        if follower in account.following:
+            account.unfollow(follower)
+            print(f"Account {account.id} unfollowed account {follower.id}.")
+        else:
+            print(f"Account {account.id} does not follows account {follower.id}.")
+
     def get_all_accounts(self):
         return self.account_repository.list()
