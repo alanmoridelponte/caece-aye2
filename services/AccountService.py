@@ -34,11 +34,11 @@ class AccountService:
         if account.can_follow(follower):
             if follower not in account.following:
                 account.follow(follower)
-                print(f"Account {account.id} follows account {follower.id}.")
+                print(f"Account {account.id} follows Account {follower.id}.")
             else:
-                print(f"Account {account.id} already follows account {follower.id}.")
+                print(f"Account {account.id} already follows Account {follower.id}.")
         else:
-            print(f"Account {account.id} cannot follow account {follower.id} due to type restrictions.")
+            print(f"Account {account.id} cannot follow Account {follower.id} due to type restrictions.")
 
     def unfollow(self, account: Account, follower: Account):
         if account.state == Account.STATE_SUSPENDED:

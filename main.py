@@ -7,6 +7,7 @@ from repositories.AccountInMemoryRepository import AccountInMemoryRepository
 from repositories.UserInMemoryRepository import UserInMemoryRepository
 from repositories.PostInMemoryRepository import PostInMemoryRepository
 from utils.Menu import Menu
+from utils.Class import type_str
 
 
 if __name__ == "__main__":        
@@ -25,6 +26,52 @@ if __name__ == "__main__":
         post_service=post_service
     )
 
+    for i in range(1, 11):
+        user = user_service.create(
+            username=f'u{i}', 
+            password='password',
+            email=f'u{i}@email.com',
+            fullname=f'u{i}', 
+            birth_date='30/12/1997'
+        )
+        type = Account.NORMAL
+        if i > 5 and i < 9:
+            type = Account.POPULAR
+        elif i > 8:
+            type = Account.COMPANY
+        account_service.register(user, type)
+
+    accounts = account_service.get_all_accounts()
+
+    account_service.follow(accounts[0], accounts[1])
+    account_service.follow(accounts[0], accounts[7])
+    account_service.follow(accounts[0], accounts[9])
+
+    account_service.follow(accounts[1], accounts[5])
+    account_service.follow(accounts[1], accounts[9])
+
+    account_service.follow(accounts[2], accounts[3])
+    account_service.follow(accounts[2], accounts[5])
+    account_service.follow(accounts[2], accounts[8])
+
+    account_service.follow(accounts[3], accounts[2])
+    account_service.follow(accounts[3], accounts[4])
+    account_service.follow(accounts[3], accounts[6])
+
+    account_service.follow(accounts[4], accounts[6])
+    account_service.follow(accounts[4], accounts[7])
+    account_service.follow(accounts[4], accounts[8])
+
+    account_service.follow(accounts[5], accounts[8])
+    account_service.follow(accounts[5], accounts[9])
+
+    account_service.follow(accounts[6], accounts[8])
+
+    account_service.follow(accounts[7], accounts[5])
+    account_service.follow(accounts[7], accounts[8])
+    account_service.follow(accounts[7], accounts[9])
+    
+
     def create_custom_account():
         user = user_service.create(
             username='bob', 
@@ -37,7 +84,7 @@ if __name__ == "__main__":
 
     def see_all_useraccounts():
         all_accounts = account_service.get_all_accounts()
-        print(f"Ids de usuarios en cuentas: {['id: ' + str(account.user.id) + ' ' + str(type(account)) for account in all_accounts]}")
+        print(f"Ids de usuarios en cuentas: {[f'id: {account.user.id} {type_str(account)}' for account in all_accounts]}")
 
     def make_follower():
         all_accounts = account_service.get_all_accounts()

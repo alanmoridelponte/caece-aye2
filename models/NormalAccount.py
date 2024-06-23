@@ -9,5 +9,5 @@ class NormalAccount(Account, Followable):
         Followable.__init__(self)
 
     def can_follow(self, account: Account):
-        return not isinstance(account, CompanyAccount)
+        return True
         
