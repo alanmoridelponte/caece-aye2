@@ -5,5 +5,8 @@ class Taggeable(ABC):
     def __init__(self):
         self.tags = set()
 
-    def addTag(self, account: Account):
+    def add_tag(self, account: Account):
         self.tags.add(account)
+
+    def remove_tag(self, account: Account):
+        self.tags.remove(account)
