@@ -65,5 +65,22 @@ class PostService:
         if not post.is_repostable:
             raise Exception('Post is not repostable')
 
-        self.create(account, post.content, post.is_likeable, True)
+        return self.create(account, post.content, post.is_likeable, True)
 
+    def scoped_post_followers(self, post: Post):        
+        return self.scope_followers(post.author)
+
+    def scope_followers(self, account: Account, followers: set = None) -> set:
+        if followers is None:
+            followers = set()
+
+        if account in followers:
+            return followers
+
+        followers.add(account)
+
+        for follower in account.following:
+            self.scope_followers(follower, followers)
+
+        return followers
+        

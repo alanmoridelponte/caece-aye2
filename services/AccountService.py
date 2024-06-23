@@ -34,7 +34,7 @@ class AccountService:
         if account.can_follow(follower):
             if follower not in account.following:
                 account.follow(follower)
-                print(f"Account {account.id} followed account {follower.id}.")
+                print(f"Account {account.id} follows account {follower.id}.")
             else:
                 print(f"Account {account.id} already follows account {follower.id}.")
         else:
@@ -59,6 +59,6 @@ class AccountService:
         for account in self.account_repository.list():
             if account.user.username in usernames:
                 accounts_list.add(account)
-            
+
         return accounts_list
 

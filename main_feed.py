@@ -53,12 +53,13 @@ if __name__ == "__main__":
     )
     acc3 = account_service.register(user3, Account.NORMAL)
 
-    account_service.follow(acc3, acc1)
+    account_service.follow(acc1, acc2)
 
-    repost1 = post_service.create(acc1, 'hola @alice. @roberto @bob', False, True)
+
+    post1 = post_service.create(acc1, 'hola @alice. @roberto @bob', False, True)
     post_service.create(acc1, 'hola 2', False, False)
 
-    post_service.repost(repost1, acc3)
+    repost2 = post_service.repost(post1, acc3)
     posts = feed_service.get_feed(acc1)
 
     for post in posts:
@@ -70,3 +71,4 @@ if __name__ == "__main__":
             )
         )
 
+    print(f"scope repost2: {[account.user.username for account in post_service.scoped_post_followers(post1)]}")
