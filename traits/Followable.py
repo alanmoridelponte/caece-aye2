@@ -7,13 +7,13 @@ class Followable(ABC):
         self.following = set()
 
     @abstractmethod
-    def can_follow(self, account):
+    def can_follow(self, account: Account):
         pass
 
-    def follow(self, account):
+    def follow(self, account: Account):
         self.following.add(account)
         account.followers.add(self)
 
-    def unfollow(self, account):
+    def unfollow(self, account: Account):
         self.following.remove(account)
         account.followers.remove(self)

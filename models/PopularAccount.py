@@ -7,6 +7,6 @@ class PopularAccount(Account, Followable):
         super().__init__(user, id)
         Followable.__init__(self)
 
-    def can_follow(self, account):
+    def can_follow(self, account: Account):
         return True
         
