@@ -1,3 +1,4 @@
+from utils.Date import get_current_timestamp
 from models.Entity import Entity
 
 class User(Entity):
@@ -8,3 +9,4 @@ class User(Entity):
         self.email = email
         self.fullname = fullname
         self.birth_date = birth_date
+        self.create_date = get_current_timestamp()
