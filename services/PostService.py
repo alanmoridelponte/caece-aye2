@@ -15,7 +15,10 @@ class PostService:
         self.post_repository = post_repository
         self.account_service = account_service
 
-    def create(self, author: Account, content: str, likeable: bool, repostable: bool) -> Post:        
+    def create(self, author: Account, content: str, likeable: bool, repostable: bool) -> Post:  
+        if author.state == Account.STATE_SUSPENDED:
+            raise Exception(f"Account {account.id} is suspended and cannot create post.")
+
         post_content_length = len(content)
         is_author_normal = type_str(author) == type_str(NormalAccount)
 
@@ -41,12 +44,18 @@ class PostService:
         return self.post_repository.filter(callback)
 
     def add_like(self, post: Post, account: Account):
+        if account.state == Account.STATE_SUSPENDED:
+            raise Exception(f"Account {account.id} is suspended and cannot add like.")
+
         if not post.is_likeable:
             raise Exception('Post is not likeable')
  
         post.add_like(account)
     
     def remove_like(self, post: Post, account: Account):
+        if account.state == Account.STATE_SUSPENDED:
+            raise Exception(f"Account {account.id} is suspended and cannot remove like.")
+
         if not post.is_likeable:
             raise Exception('Post is not likeable')
  

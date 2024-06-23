@@ -7,6 +7,7 @@ from repositories.AccountInMemoryRepository import AccountInMemoryRepository
 from repositories.UserInMemoryRepository import UserInMemoryRepository
 from repositories.PostInMemoryRepository import PostInMemoryRepository
 from utils.Menu import Menu
+from utils.String import generate_post_ascii
 
 
 if __name__ == "__main__":        
@@ -54,14 +55,18 @@ if __name__ == "__main__":
 
     account_service.follow(acc3, acc1)
 
-    post_service.create(acc1, 'hola @alice. @roberto @bob', False, False)
+    repost1 = post_service.create(acc1, 'hola @alice. @roberto @bob', False, True)
     post_service.create(acc1, 'hola 2', False, False)
 
-    posts = feed_service.get_feed(acc3)
+    post_service.repost(repost1, acc3)
+    posts = feed_service.get_feed(acc1)
 
     for post in posts:
-        print(f"Post {post.author.user.fullname + ': ' + post.content}")
-        for tag in post.tags:
-            print(f"tag: {str(tag.user.fullname)}")
-        print('----')
+        print(
+            generate_post_ascii(
+                f"{post.author.user.username} dijo:", 
+                post.content, 
+                len(post.likes)
+            )
+        )
 
