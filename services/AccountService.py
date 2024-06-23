@@ -53,3 +53,12 @@ class AccountService:
 
     def get_all_accounts(self):
         return self.account_repository.list()
+
+    def get_accounts_by_usernames(self, usernames: set()):
+        accounts_list = set()
+        for account in self.account_repository.list():
+            if account.user.username in usernames:
+                accounts_list.add(account)
+            
+        return accounts_list
+

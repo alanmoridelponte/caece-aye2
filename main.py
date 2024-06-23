@@ -16,7 +16,8 @@ if __name__ == "__main__":
         account_repository=AccountInMemoryRepository()
     )
     post_service = PostService(
-        post_repository=PostInMemoryRepository()
+        post_repository=PostInMemoryRepository(),
+        account_service=account_service
     )
 
     def create_custom_account():
@@ -57,7 +58,7 @@ if __name__ == "__main__":
         )
         acc2 = account_service.register(user2, Account.NORMAL)
 
-        post_service.create(acc1, 'hola', [acc2])
+        post_service.create(acc1, 'hola @alice. @roberto @bob', False, False)
         posts = post_service.get_all_posts()
 
         for post in posts:
