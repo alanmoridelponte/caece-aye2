@@ -1,4 +1,5 @@
 import datetime
+from typing import Callable
 from repositories.interfaces.IRepository import IRepository
 from services.AccountService import AccountService
 from models.Account import Account
@@ -33,6 +34,27 @@ class PostService:
 
         return self.post_repository.add(post)
 
-
     def get_all_posts(self):
         return self.post_repository.list()
+
+    def get_filtered_posts(self, callback: Callable):
+        return self.post_repository.filter(callback)
+
+    def add_like(self, post: Post, account: Account):
+        if not post.is_likeable:
+            raise Exception('Post is not likeable')
+ 
+        post.add_like(account)
+    
+    def remove_like(self, post: Post, account: Account):
+        if not post.is_likeable:
+            raise Exception('Post is not likeable')
+ 
+        post.remove_like(account)
+
+    def repost(self, post: Post, account: Account):
+        if not post.is_repostable:
+            raise Exception('Post is not repostable')
+
+        self.create(account, post.content, post.is_likeable, True)
+

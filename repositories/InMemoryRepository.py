@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Callable
 from repositories.interfaces.IRepository import IRepository
 from utils.Class import type_check, T
 
@@ -41,3 +41,6 @@ class InMemoryRepository(IRepository[T]):
 
     def list(self) -> List[T]:
         return list(self._data.values())
+
+    def filter(self, callback: Callable) -> Optional[T]:
+        return filter(callback, self.list())

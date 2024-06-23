@@ -1,6 +1,7 @@
 from services.AccountService import AccountService
 from services.UserService import UserService
 from services.PostService import PostService
+from services.FeedService import FeedService
 from models.Account import Account
 from repositories.AccountInMemoryRepository import AccountInMemoryRepository
 from repositories.UserInMemoryRepository import UserInMemoryRepository
@@ -18,6 +19,10 @@ if __name__ == "__main__":
     post_service = PostService(
         post_repository=PostInMemoryRepository(),
         account_service=account_service
+    )
+    feed_service = FeedService(
+        account_service=account_service,
+        post_service=post_service
     )
 
     def create_custom_account():
