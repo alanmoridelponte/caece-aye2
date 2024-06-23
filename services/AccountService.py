@@ -27,7 +27,18 @@ class AccountService:
         return self.account_repository.add(account)
 
     def follow(self, account: Account, follower: Account):
-        account.follow(follower)
+        if account.state == Account.STATE_SUSPENDED:
+            print(f"Account {account.id} is suspended and cannot follow other accounts.")
+            return
+
+        if account.can_follow(follower):
+            if follower not in account.following:
+                account.follow(follower)
+                print(f"Account {account.id} followed account {follower.id}.")
+            else:
+                print(f"Account {account.id} already follows account {follower.id}.")
+        else:
+            print(f"Account {account.id} cannot follow account {follower.id} due to type restrictions.")
 
     def get_all_accounts(self):
         return self.account_repository.list()

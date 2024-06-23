@@ -11,16 +11,9 @@ class Followable(ABC):
         pass
 
     def follow(self, account):
-        if self.state == Account.STATE_SUSPENDED:
-            print(f"Account {self.id} is suspended and cannot follow other accounts.")
-            return
+        self.following.add(account)
+        account.followers.add(self)
 
-        if self.can_follow(account):
-            if account not in self.following:
-                self.following.add(account)
-                account.followers.add(self)
-                print(f"Account {self.id} followed account {account.id}.")
-            else:
-                print(f"Account {self.id} already follows account {account.id}.")
-        else:
-            print(f"Account {self.id} cannot follow account {account.id} due to type restrictions.")
+    def unfollow(self, account):
+        self.following.remove(account)
+        account.followers.remove(self)
