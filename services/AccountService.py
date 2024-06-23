@@ -1,31 +1,33 @@
 import datetime
 from repositories.interfaces.IRepository import IRepository
-from services.UserService import UserService
 from models.Account import Account
+from models.NormalAccount import NormalAccount
+from models.PopularAccount import PopularAccount
+from models.CompanyAccount import CompanyAccount
 from models.User import User
 
 class AccountService:
-    def __init__(self, account_repository: IRepository, user_service: UserService):
+    def __init__(self, account_repository: IRepository):
         self.account_repository = account_repository
-        self.user_service = user_service
 
-    def register(self, username: str, password: str, email: str, fullname: str, birth_date: str) -> Account:
-        user = self.user_service.create(
-            username=username,
-            password=password,
-            email=email,
-            fullname=fullname, 
-            birth_date=birth_date
-        )
+    def register(self, user: User, account_type: str) -> Account:
+        account_list = self.account_repository.list()
+        if any(account.user.id == user.id for account in account_list):
+            raise ValueError("User already registered") 
 
-        account = Account(
-            user=user,
-            create_date=datetime.datetime.now().replace(microsecond=0).isoformat(),
-            type=Account.TYPE_NORMAL,
-            status=Account.STATUS_OPEN
-        )
+        if account_type == Account.NORMAL:
+            account = NormalAccount(user)
+        elif account_type == Account.POPULAR:
+            account = PopularAccount(user)
+        elif account_type == Account.COMPANY:
+            account = CompanyAccount(user)
+        else:
+            raise ValueError("Unknown account type")       
 
         return self.account_repository.add(account)
+
+    def follow(self, account: Account, follower: Account):
+        account.follow(follower)
 
     def get_all_accounts(self):
         return self.account_repository.list()
