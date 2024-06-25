@@ -16,3 +16,9 @@ class FeedService:
             return is_author or is_in_post_tags or is_author_followed
 
         return self.post_service.get_filtered_posts(condition)
+
+    def get_own_feed(self, account: Account):
+        def condition(post):
+            return post.author == account
+
+        return self.post_service.get_filtered_posts(condition)
