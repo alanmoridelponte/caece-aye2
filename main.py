@@ -1,14 +1,16 @@
+from types import SimpleNamespace
 from services.AccountService import AccountService
 from services.UserService import UserService
 from services.PostService import PostService
 from services.FeedService import FeedService
 from models.Account import Account
+from models.User import User
 from repositories.AccountInMemoryRepository import AccountInMemoryRepository
 from repositories.UserInMemoryRepository import UserInMemoryRepository
 from repositories.PostInMemoryRepository import PostInMemoryRepository
 from utils.Menu import Menu
-from utils.Class import type_str
-
+from main_metodos import *
+from utils.String import generate_post_ascii
 
 if __name__ == "__main__":        
     user_service = UserService(
@@ -25,104 +27,33 @@ if __name__ == "__main__":
         account_service=account_service,
         post_service=post_service
     )
-
-    for i in range(1, 11):
-        user = user_service.create(
-            username=f'u{i}', 
-            password='password',
-            email=f'u{i}@email.com',
-            fullname=f'u{i}', 
-            birth_date='30/12/1997'
-        )
-        type = Account.NORMAL
-        if i > 5 and i < 9:
-            type = Account.POPULAR
-        elif i > 8:
-            type = Account.COMPANY
-        account_service.register(user, type)
-
-    accounts = account_service.get_all_accounts()
-
-    account_service.follow(accounts[0], accounts[1])
-    account_service.follow(accounts[0], accounts[7])
-    account_service.follow(accounts[0], accounts[9])
-
-    account_service.follow(accounts[1], accounts[5])
-    account_service.follow(accounts[1], accounts[9])
-
-    account_service.follow(accounts[2], accounts[3])
-    account_service.follow(accounts[2], accounts[5])
-    account_service.follow(accounts[2], accounts[8])
-
-    account_service.follow(accounts[3], accounts[2])
-    account_service.follow(accounts[3], accounts[4])
-    account_service.follow(accounts[3], accounts[6])
-
-    account_service.follow(accounts[4], accounts[6])
-    account_service.follow(accounts[4], accounts[7])
-    account_service.follow(accounts[4], accounts[8])
-
-    account_service.follow(accounts[5], accounts[8])
-    account_service.follow(accounts[5], accounts[9])
-
-    account_service.follow(accounts[6], accounts[8])
-
-    account_service.follow(accounts[7], accounts[5])
-    account_service.follow(accounts[7], accounts[8])
-    account_service.follow(accounts[7], accounts[9])
     
+    pruebas(user_service, post_service, account_service)
 
-    def create_custom_account():
-        user = user_service.create(
-            username='bob', 
-            password='password',
-            email='bob@email.com',
-            fullname='Bob', 
-            birth_date='30/12/1997'
-        )
-        account_service.register(user, Account.NORMAL)
-
-    def see_all_useraccounts():
-        all_accounts = account_service.get_all_accounts()
-        print(f"Ids de usuarios en cuentas: {[f'id: {account.user.id} {type_str(account)}' for account in all_accounts]}")
-
-    def make_follower():
-        all_accounts = account_service.get_all_accounts()
-        account_service.follow(all_accounts[0], all_accounts[1])
-        print(f"{account_service.get_all_accounts()[1].followers}")
-
-    def test_post():
-        user1 = user_service.create(
-            username='bob', 
-            password='password',
-            email='bob@email.com',
-            fullname='Bob', 
-            birth_date='30/12/1997'
-        )
-        acc1 = account_service.register(user1, Account.NORMAL)
-
-        user2 = user_service.create(
-            username='alice', 
-            password='password',
-            email='alice@email.com',
-            fullname='Alice', 
-            birth_date='23/05/1992'
-        )
-        acc2 = account_service.register(user2, Account.NORMAL)
-
-        post_service.create(acc1, 'hola @alice. @roberto @bob', False, False)
-        posts = post_service.get_all_posts()
-
-        for post in posts:
-            print(f"Post {[ post.author.user.fullname + ': ' + post.content for post in posts ]}")
-            for tag in post.tags:
-                print(f"tag: {str(tag.user.fullname)}")
+    ns = SimpleNamespace()
+    ns.account_selected = None
 
     menu = Menu("Seleccione opción:")
-    menu.opcion(1, 'Crear cuenta predefinida', create_custom_account, False)
-    menu.opcion(2, 'prueba seguir', make_follower, False)
-    menu.opcion(3, 'Ver cuentas con usuarios', see_all_useraccounts)
-    menu.opcion(4, 'posts', test_post, False)
-    menu.opcion(5, 'Salir', menu.salir, False)
+
+    # Submenú de Ver la pizarra
+    menuVerPizarra = Menu("Ver la pizarra")
+    menuVerPizarra.opcion(0, 'Volver', menuVerPizarra.salir, False)
+    menuVerPizarra.opcion(1, 'Realizar acción Me Gusta sobre una publicación', lambda: True)
+    menuVerPizarra.opcion(2, 'Realizar acción Republicar sobre una publicación', lambda: True)
+
+    # Submenú de Seleccionar una cuenta
+    menuSeleccionarCuenta = Menu("Seleccionar una cuenta")
+    menuSeleccionarCuenta.opcion(0, 'Volver', menuSeleccionarCuenta.salir, False)
+    menuSeleccionarCuenta.opcion(1, 'Ver la pizarra', ver_pizzarra(feed_service, ns, menuVerPizarra.mostrar), True)
+    menuSeleccionarCuenta.opcion(2, 'Ver publicaciones realizadas', lambda: True)
+    menuSeleccionarCuenta.opcion(3, 'Publicar', lambda: True)
+    menuSeleccionarCuenta.opcion(4, 'Ver información de la cuenta', lambda: True)
+    menuSeleccionarCuenta.opcion(5, 'Ver alcance de la cuenta', lambda: True)
+    menuSeleccionarCuenta.opcion(6, 'Activar/Suspender la cuenta', lambda: True)
+
+    # Menú principal
+    menu.opcion(1, 'Listar todas las cuentas de la red', listar_cuentas_de_la_red(account_service))
+    menu.opcion(2, 'Seleccionar una cuenta', seleccionar_cuenta(account_service, ns, menuSeleccionarCuenta.mostrar), False)
+    menu.opcion(3, 'Salir', menu.salir, False)
 
     menu.mostrar()

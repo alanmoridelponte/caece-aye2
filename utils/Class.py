@@ -12,6 +12,3 @@ def type_check(func):
             raise TypeError(f"Only {self._type().__name__} instances can be handled by the repository.")
         return func(self, *args, **kwargs)
     return wrapper
-
-def type_str(entity) -> str:
-    return str(type(entity))

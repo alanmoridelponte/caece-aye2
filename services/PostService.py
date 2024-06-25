@@ -7,7 +7,6 @@ from models.NormalAccount import NormalAccount
 from models.PopularAccount import PopularAccount
 from models.CompanyAccount import CompanyAccount
 from models.Post import Post
-from utils.Class import type_str
 from utils.String import get_username_tags
 
 class PostService:
@@ -20,12 +19,12 @@ class PostService:
             raise Exception(f"Account {account.id} is suspended and cannot create post.")
 
         post_content_length = len(content)
-        is_author_normal = type_str(author) == type_str(NormalAccount)
+        is_author_normal = isinstance(author, NormalAccount)
 
         if (is_author_normal and post_content_length > 150):
-            raise Exception(f'{type_str(author)} cannot post content longer than 150 characters')
+            raise Exception(f'{author.__class__.__name__} cannot post content longer than 150 characters')
         elif (not is_author_normal and post_content_length > 300):
-            raise Exception(f'{type_str(author)} cannot post content longer than 300 characters')
+            raise Exception(f'{author.__class__.__name__} cannot post content longer than 300 characters')
         
         post = Post(author, content)
         post.is_likeable = likeable
@@ -79,7 +78,7 @@ class PostService:
 
         followers.add(account)
 
-        for follower in account.following:
+        for follower in account.followers:
             self.scope_followers(follower, followers)
 
         return followers

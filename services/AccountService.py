@@ -62,3 +62,6 @@ class AccountService:
 
         return accounts_list
 
+    def get_account_by_id(self, id: int) -> Account:
+        return self.account_repository.get_by_id(id)
+
