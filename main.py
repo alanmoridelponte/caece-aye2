@@ -46,10 +46,10 @@ if __name__ == "__main__":
     menuSeleccionarCuenta.opcion(0, 'Volver', menuSeleccionarCuenta.salir, False)
     menuSeleccionarCuenta.opcion(1, 'Ver la pizarra', ver_pizzarra(feed_service, ns, menuVerPizarra.mostrar), True)
     menuSeleccionarCuenta.opcion(2, 'Ver publicaciones realizadas', ver_pizarra_propia(feed_service, ns), True)
-    menuSeleccionarCuenta.opcion(3, 'Publicar', lambda: publicar_desde_menu(user_service, account_service, post_service, ns), True)
-    menuSeleccionarCuenta.opcion(4, 'Ver información de la cuenta', lambda: ver_informacion_cuenta(account_service, ns), True)
-    menuSeleccionarCuenta.opcion(5, 'Ver alcance de la cuenta', lambda: ver_alcance_cuenta(user_service, account_service, post_service, ns), True)
-    menuSeleccionarCuenta.opcion(6, 'Activar/Suspender la cuenta', lambda: activar_o_suspender_cuenta(user_service, account_service, ns), True)
+    menuSeleccionarCuenta.opcion(3, 'Publicar', publicar_desde_menu(user_service, account_service, post_service, ns), True)
+    menuSeleccionarCuenta.opcion(4, 'Ver información de la cuenta', ver_informacion_cuenta(account_service, ns), True)
+    menuSeleccionarCuenta.opcion(5, 'Ver alcance de la cuenta', ver_alcance_cuenta(user_service, account_service, post_service, ns), True)
+    menuSeleccionarCuenta.opcion(6, 'Activar/Suspender la cuenta', activar_o_suspender_cuenta(user_service, account_service, ns), True)
 
     # Menú principal
     menu.opcion(1, 'Listar todas las cuentas de la red', listar_cuentas_de_la_red(account_service))

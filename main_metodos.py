@@ -207,26 +207,38 @@ def ver_pizarra_propia(feed_service: FeedService, instance):
     return get_own_feed
 
 def publicar_desde_menu(user_service: UserService, account_service: AccountService, post_service: PostService, instance):
-    post_dato = input("Ingrese el mensaje que quiere enviar: ")
-    repostable = choose_option_bool('¿Quiere que el post sea reposteable?')
-    likeable = choose_option_bool('¿Quiere que el post sea likeable?')
+    def func():
+        post_dato = input("Ingrese el mensaje que quiere enviar: ")
+        likeable = choose_option_bool('¿Quiere que el post sea likeable?')
+        repostable = choose_option_bool('¿Quiere que el post sea reposteable?')
 
-    post_service.create(instance.account_selected, post_dato, repostable, likeable)
+        post_service.create(instance.account_selected, post_dato, likeable, repostable)
+
+    return func
 
 def ver_informacion_cuenta(account_service: AccountService, instance):
-    print("User:", instance.account_selected.user.username)
-    print("Fecha de crecion:", instance.account_selected.create_date)
-    print("Estado de la cuenta:", instance.account_selected.state)
+    def func():
+        print("User:", instance.account_selected.user.username)
+        print("Fecha de crecion:", instance.account_selected.create_date)
+        print("Estado de la cuenta:", instance.account_selected.state)
+
+    return func
 
 def ver_alcance_cuenta(user_service: UserService, account_service: AccountService, post_service: PostService, instance):
-    account_selected = instance.account_selected
-    alcance = len(post_service.scope_followers(account_selected)) - 1
-    print(f"se muestra el alcance de la cuenta {(account_selected.user.username)}: {alcance}")
+    def func():
+        account_selected = instance.account_selected
+        alcance = len(post_service.scope_followers(account_selected)) - 1
+        print(f"se muestra el alcance de la cuenta {(account_selected.user.username)}: {alcance}")
+    
+    return func
 
 def activar_o_suspender_cuenta(user_service: UserService, account_service: AccountService, instance):
-    account_selected = instance.account_selected
-    print(f"El estado de la cuenta {account_selected.user.username} actual es: {account_selected.state}")
-    should_toogle_status = choose_option_bool('¿Esta seguro que desea cambiar el estado de la cuenta?')
-    if should_toogle_status:
-        account_service.toggle_account_status(account_selected)
-        print(f"El estado de la cuenta {account_selected.user.username} actual ahora es: {account_selected.state}")
+    def func():
+        account_selected = instance.account_selected
+        print(f"El estado de la cuenta {account_selected.user.username} actual es: {account_selected.state}")
+        should_toogle_status = choose_option_bool('¿Esta seguro que desea cambiar el estado de la cuenta?')
+        if should_toogle_status:
+            account_service.toggle_account_status(account_selected)
+            print(f"El estado de la cuenta {account_selected.user.username} actual ahora es: {account_selected.state}")
+    
+    return func
