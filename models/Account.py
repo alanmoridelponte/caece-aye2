@@ -3,12 +3,12 @@ from models.Entity import Entity
 from models.User import User
 
 class Account(Entity):
-    STATE_OPEN = 'open'
-    STATE_SUSPENDED = 'suspended'
+    STATE_OPEN = 'Abierta'
+    STATE_SUSPENDED = 'Suspendida'
 
-    NORMAL = 'normal'
-    POPULAR = 'popular'
-    COMPANY = 'company'
+    NORMAL = 'Cuenta Normal'
+    POPULAR = 'Cuenta Popular'
+    COMPANY = 'Cuenta Empresa'
 
     def __init__(self, user: User, id: int = None):
         super().__init__(id)

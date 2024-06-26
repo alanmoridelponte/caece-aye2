@@ -8,7 +8,7 @@ from models.Post import Post
 from repositories.AccountInMemoryRepository import AccountInMemoryRepository
 from repositories.UserInMemoryRepository import UserInMemoryRepository
 from repositories.PostInMemoryRepository import PostInMemoryRepository
-from utils.Menu import Menu
+from utils.Menu import Menu, choose_option_bool
 from utils.String import generate_post_ascii
 
 def crear_usuarios_cuentas_y_relaciones(user_service: UserService, account_service: AccountService):
@@ -144,7 +144,7 @@ def pruebas(user_service: UserService, post_service: PostService, account_servic
 def listar_cuentas_de_la_red(account_service: AccountService):
     def accounts_list():
         for account in account_service.get_all_accounts():
-            print(f"{account.id} - {account.user.username}")  
+            print('{:<2} - {}'.format(account.id, account.user.username))
     return accounts_list
 
 def seleccionar_cuenta(account_service: AccountService, instance, action: Callable):
@@ -163,10 +163,70 @@ def ver_pizzarra(feed_service: FeedService, instance, action: Callable):
         for post in feed_service.get_feed(instance.account_selected):
             print(
                 generate_post_ascii(
-                    f"Post ID: {post.id}- {post.author.user.username} dijo:", 
+                    f"Post ID: {post.id} - {post.author.user.username} dijo:", 
                     post.content, 
                     len(post.likes)
                 )
             )
+        action()
 
     return see_feed
+
+def ver_pizarra_dar_like(post_service: PostService, instance):
+    def add_like():
+        post_id = int(input('Seleccione id de post: '))
+        if any(post.id == post_id for post in post_service.get_all_posts()):
+            post_selected = post_service.get_post_by_id(post_id)
+            post_service.add_like(post_selected, instance.account_selected)
+        else:
+            print('No existe el id de post...')
+
+    return add_like
+
+def ver_pizarra_repostear(post_service: PostService, instance):
+    def add_like():
+        post_id = int(input('Seleccione id de post: '))
+        if any(post.id == post_id for post in post_service.get_all_posts()):
+            post_selected = post_service.get_post_by_id(post_id)
+            post_service.repost(post_selected, instance.account_selected)
+        else:
+            print('No existe el id de post...')
+
+    return add_like
+
+def ver_pizarra_propia(feed_service: FeedService, instance):
+    def get_own_feed():
+        for post in feed_service.get_own_feed(instance.account_selected):
+            print(
+                generate_post_ascii(
+                    f"Post ID: {post.id} - {post.author.user.username} dijo:", 
+                    post.content, 
+                    len(post.likes)
+                )
+            )
+    return get_own_feed
+
+def publicar_desde_menu(user_service: UserService, account_service: AccountService, post_service: PostService, instance):
+    post_dato = input("Ingrese el mensaje que quiere enviar: ")
+    repostable = choose_option_bool('¿Quiere que el post sea reposteable?')
+    likeable = choose_option_bool('¿Quiere que el post sea likeable?')
+
+    post_service.create(instance.account_selected, post_dato, repostable, likeable)
+
+def ver_informacion_cuenta(account_service: AccountService, instance):
+    print("User:", instance.account_selected.user.username)
+    print("Fecha de crecion:", instance.account_selected.create_date)
+    print("Estado de la cuenta:", instance.account_selected.state)
+
+def ver_alcance_cuenta(user_service: UserService, account_service: AccountService, post_service: PostService, instance):
+    account_selected = instance.account_selected
+    alcance = len(post_service.scope_followers(account_selected)) - 1
+    print(f"se muestra el alcance de la cuenta {(account_selected.user.username)}: {alcance}")
+
+def activar_o_suspender_cuenta(user_service: UserService, account_service: AccountService, instance):
+    account_selected = instance.account_selected
+    print(f"El estado de la cuenta {account_selected.user.username} actual es: {account_selected.state}")
+    should_toogle_status = choose_option_bool('¿Esta seguro que desea cambiar el estado de la cuenta?')
+    if should_toogle_status:
+        account_service.toggle_account_status(account_selected)
+        print(f"El estado de la cuenta {account_selected.user.username} actual ahora es: {account_selected.state}")

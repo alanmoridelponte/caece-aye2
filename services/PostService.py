@@ -14,9 +14,9 @@ class PostService:
         self.post_repository = post_repository
         self.account_service = account_service
 
-    def create(self, author: Account, content: str, likeable: bool, repostable: bool) -> Post:  
+    def create(self, author: Account, content: str, likeable: bool, repostable: bool) -> Post:
         if author.state == Account.STATE_SUSPENDED:
-            raise Exception(f"Account {account.id} is suspended and cannot create post.")
+            raise Exception(f"Account {author.id} is suspended and cannot create post.")
 
         post_content_length = len(content)
         is_author_normal = isinstance(author, NormalAccount)
@@ -64,7 +64,8 @@ class PostService:
         if not post.is_repostable:
             raise Exception('Post is not repostable')
 
-        return self.create(account, post.content, post.is_likeable, True)
+        post_content = f"[Respost de {post.author.user.username}]\n{post.content}"
+        return self.create(account, post_content, post.is_likeable, True)
 
     def scoped_post_followers(self, post: Post):        
         return self.scope_followers(post.author)
@@ -82,4 +83,7 @@ class PostService:
             self.scope_followers(follower, followers)
 
         return followers
+
+    def get_post_by_id(self, id: int) -> Post:
+        return self.post_repository.get_by_id(id)
         

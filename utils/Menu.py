@@ -56,3 +56,14 @@ class Menu():
             print("Opción no válida, por favor intente de nuevo.")
         except Exception as e:
             print(f"Error al ejecutar la opción: {e}")
+
+
+def choose_option_bool(prompt: str) -> bool:
+    while True:
+        op = input(f"{prompt} (y/n): ").strip().lower()
+        if op == 'y':
+            return True
+        elif op == 'n':
+            return False
+        else:
+            print('Respuesta inválida. Intente de nuevo')

@@ -65,3 +65,9 @@ class AccountService:
     def get_account_by_id(self, id: int) -> Account:
         return self.account_repository.get_by_id(id)
 
+    def toggle_account_status(self, account: Account):
+        if account.state == account.STATE_OPEN:
+            account.state = account.STATE_SUSPENDED
+        else:
+            account.state = account.STATE_OPEN
+
